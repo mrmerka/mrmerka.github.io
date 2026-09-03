@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MrMeRKa</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0d0e12;
+      --surface: #17181f;
+      --surface-variant: #22232e;
+      --primary: #9966ff;
+      --on-primary: #000000;
+      --text: #e6e1e5;
+      --text-muted: #958da5;
+      --outline: #383446;
+      --shape-full: 9999px;
+      --shape-card: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Top Bar & Hamburger */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      z-index: 10;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 44px;
+      height: 44px;
+      padding: 11px 9px;
+      border-radius: var(--shape-full);
+      transition: background-color 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background-color: rgba(153, 102, 255, 0.12);
+    }
+
+    .icon-btn span {
+      width: 100%;
+      height: 2.5px;
+      background-color: var(--text);
+      border-radius: 4px;
+    }
+
+    /* Backdrop & Drawer */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 20;
+    }
+
+    .backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 300px;
+      height: 100%;
+      background-color: var(--surface);
+      border-top-right-radius: var(--shape-card);
+      border-bottom-right-radius: var(--shape-card);
+      border-right: 1px solid var(--outline);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+      z-index: 30;
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .drawer.active {
+      transform: translateX(320px);
+    }
+
+    .drawer-header {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--outline);
+    }
+
+    .drawer-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .drawer-btn {
+      background-color: var(--surface-variant);
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid transparent;
+      padding: 14px 20px;
+      border-radius: var(--shape-full);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .drawer-btn:hover {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* App Views */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 24px 24px;
+    }
+
+    .view {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Home View */
+    .hero-text {
+      text-align: center;
+      font-size: 1.15rem;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      max-width: 520px;
+      color: var(--text);
+    }
+
+    .links-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 280px;
+    }
+
+    .pill-btn {
+      display: block;
+      text-align: center;
+      text-decoration: none;
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--outline);
+      padding: 14px 24px;
+      border-radius: var(--shape-full);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      transition: all 0.25s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .pill-btn:hover {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      box-shadow: 0 4px 20px rgba(153, 102, 255, 0.35);
+      transform: translateY(-2px);
+    }
+
+    /* Projects View */
+    .view-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 24px;
+      text-align: center;
+    }
+
+    .m3-card {
+      width: 100%;
+      background-color: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--shape-card);
+      padding: 24px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .card-divider {
+      border: none;
+      height: 1px;
+      background-color: var(--outline);
+      margin: 16px 0;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+
+    .download-btn {
+      display: inline-block;
+      text-decoration: none;
+      background-color: var(--primary);
+      color: var(--on-primary);
+      padding: 12px 28px;
+      border-radius: var(--shape-full);
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+
+    .download-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(153, 102, 255, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="top-bar">
+    <button class="icon-btn" id="menuBtn" aria-label="Открыть меню">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <div class="backdrop" id="backdrop"></div>
+
+  <aside class="drawer" id="drawer">
+    <div class="drawer-header">MrMeRKa</div>
+    <nav class="drawer-nav">
+      <button class="drawer-btn" onclick="navigateTo('home')">Главная</button>
+      <button class="drawer-btn" onclick="navigateTo('projects')">Проекты</button>
+    </nav>
+  </aside>
+
+  <main>
+    <section class="view active" id="homeView">
+      <p class="hero-text">
+        Привет, я MrMeRKa и это мой личный сайт с проектами и ссылками
+      </p>
+
+      <div class="links-column">
+        <a href="https://www.youtube.com/@MrMeRKa11" class="pill-btn" target="_blank" rel="noopener">Youtube</a>
+        <a href="https://steamcommunity.com/id/notmrmerka/" class="pill-btn" target="_blank" rel="noopener">Steam</a>
+        <a href="t.me/mrmerka" class="pill-btn" target="_blank" rel="noopener">Telegram</a>
+      </div>
+    </section>
+
+    <section class="view" id="projectsView">
+      <h2 class="view-title">Проекты</h2>
+      
+      <div class="m3-card">
+        <h3 class="card-title">FastNote</h3>
+        <hr class="card-divider" />
+        <p class="card-desc">
+          a lightweight, responsive note-taking app crafted with modern Jetpack Compose &amp; Material You design.
+        </p>
+        <a href="#" class="download-btn" target="_blank" rel="noopener">Скоро...</a>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const drawer = document.getElementById('drawer');
+    const backdrop = document.getElementById('backdrop');
+
+    function toggleDrawer(isOpen) {
+      drawer.classList.toggle('active', isOpen);
+      backdrop.classList.toggle('active', isOpen);
+    }
+
+    menuBtn.addEventListener('click', () => toggleDrawer(true));
+    backdrop.addEventListener('click', () => toggleDrawer(false));
+
+    function navigateTo(viewName) {
+      document.querySelectorAll('.view').forEach(view => view.classList.remove('active'));
+
+      if (viewName === 'projects') {
+        document.getElementById('projectsView').classList.add('active');
+      } else {
+        document.getElementById('homeView').classList.add('active');
+      }
+
+      toggleDrawer(false);
+    }
+  </script>
+</body>
+</html>
