@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MrMeRKa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      /* Светлая тема (по умолчанию) */
+      --bg: #f4f4f7;
+      --surface: #ffffff;
+      --text: #1a1a22;
+      --text-muted: #7a7a85;
+      --outline: #e3e3ea;
+      --primary: #9966ff;
+      --on-primary: #ffffff;
+      --icon-bg: #f0eefc;
+      --icon-color: #9966ff;
+      --footer-bg: rgba(255, 255, 255, 0.7);
+      --shadow: 0 8px 28px rgba(30, 30, 60, 0.10);
+      --shadow-hover: 0 14px 32px rgba(153, 102, 255, 0.35);
+    }
+
+    /* Тёмная тема */
+    :root[data-theme="dark"] {
+      --bg: #0d0e12;
+      --surface: #17181f;
+      --text: #e6e1e5;
+      --text-muted: #958da5;
+      --outline: #2a2a36;
+      --primary: #9966ff;
+      --on-primary: #000000;
+      --icon-bg: #23202e;
+      --icon-color: #b794ff;
+      --footer-bg: rgba(13, 14, 18, 0.7);
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+      --shadow-hover: 0 14px 32px rgba(153, 102, 255, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'JetBrains Mono', monospace;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    /* Содержимое */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .heading {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 32px;
+      text-align: center;
+    }
+
+    .links-column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      width: 100%;
+      text-decoration: none;
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--outline);
+      border-radius: 18px;
+      padding: 16px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+                  box-shadow 0.25s ease,
+                  border-color 0.25s ease,
+                  background-color 0.25s ease,
+                  color 0.25s ease;
+    }
+
+    .social-btn .icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background-color: var(--icon-bg);
+      color: var(--icon-color);
+    }
+
+    .social-btn .icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Подъём кнопки при наведении — только на устройствах с курсором */
+    @media (hover: hover) and (pointer: fine) {
+      .social-btn:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+        border-color: var(--primary);
+      }
+    }
+
+    /* Кнопка в правом нижнем углу (переключение темы) */
+    .theme-toggle {
+      position: fixed;
+      bottom: 84px;
+      right: 20px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1px solid var(--outline);
+      background-color: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s cubic-bezier(0.2, 0, 0, 1),
+                  box-shadow 0.25s ease,
+                  background-color 0.3s ease,
+                  color 0.3s ease;
+      z-index: 10;
+    }
+
+    .theme-toggle svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    /* В светлой теме показываем луну (переключить на тёмную) */
+    .theme-toggle .icon-sun { display: none; }
+    .theme-toggle .icon-moon { display: block; }
+
+    /* В тёмной теме показываем солнце (переключить на светлую) */
+    :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+    @media (hover: hover) and (pointer: fine) {
+      .theme-toggle:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+      }
+    }
+
+    /* Нижняя плашка */
+    footer {
+      width: 100%;
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background-color: var(--footer-bg);
+      backdrop-filter: blur(8px);
+      border-top: 1px solid var(--outline);
+    }
+
+    footer .dot {
+      margin: 0 8px;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+
+  <main>
+    <h1 class="heading">Мои соцсети:</h1>
+
+    <div class="links-column">
+      <a class="social-btn" href="https://www.youtube.com/@MrMeRKa11" target="_blank" rel="noopener">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </span>
+        Youtube
+      </a>
+
+      <a class="social-btn" href="https://steamcommunity.com/id/notmrmerka/" target="_blank" rel="noopener">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0zM7.54 18.21l-1.473-.61c.262.543.714.999 1.314 1.25 1.297.539 2.793-.076 3.332-1.375.263-.63.264-1.319.005-1.949s-.75-1.121-1.377-1.383c-.624-.26-1.29-.249-1.878-.03l1.523.63c.956.4 1.409 1.5 1.009 2.455-.397.957-1.497 1.41-2.454 1.012H7.54zm11.415-9.303c0-1.662-1.353-3.015-3.015-3.015-1.665 0-3.015 1.353-3.015 3.015 0 1.665 1.35 3.015 3.015 3.015 1.663 0 3.015-1.35 3.015-3.015zm-5.273-.005c0-1.252 1.013-2.266 2.265-2.266 1.249 0 2.266 1.014 2.266 2.266 0 1.251-1.017 2.265-2.266 2.265-1.253 0-2.265-1.014-2.265-2.265z"/>
+          </svg>
+        </span>
+        Steam
+      </a>
+
+      <a class="social-btn" href="https://github.com/mrmerka" target="_blank" rel="noopener">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+        </span>
+        GitHub
+      </a>
+
+      <a class="social-btn" href="https://t.me/mrmerka" target="_blank" rel="noopener">
+        <span class="icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+          </svg>
+        </span>
+        Telegram
+      </a>
+    </div>
+  </main>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+    <svg class="icon-moon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M21.64 13a1 1 0 0 0-1.05-.14 8.05 8.05 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05z"/>
+    </svg>
+    <svg class="icon-sun" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0-7a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0V3a1 1 0 0 1 1-1zm0 17a1 1 0 0 1 1 1v2a1 1 0 0 1-2 0v-2a1 1 0 0 1 1-1zm9-7a1 1 0 0 1-1 1h-2a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zM5 12a1 1 0 0 1-1 1H2a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1zm13.66 7.66a1 1 0 0 1 0-1.41l1.41-1.41a1 1 0 1 1 1.41 1.41l-1.41 1.41a1 1 0 0 1-1.41 0zM3.51 6.51a1 1 0 0 1 0-1.41L4.93 3.69a1 1 0 1 1 1.41 1.41L4.93 6.51a1 1 0 0 1-1.41 0zM19.07 3.69a1 1 0 0 1 1.41 1.41l-1.41 1.41a1 1 0 0 1-1.41-1.41l1.41-1.41zM4.93 17.66a1 1 0 0 1 1.41 0l1.41 1.41a1 1 0 0 1-1.41 1.41l-1.41-1.41a1 1 0 0 1 0-1.41z"/>
+    </svg>
+  </button>
+
+  <footer>
+    © MrMeRKa<span class="dot">•</span>Kirillovo Company<span class="dot">•</span>2026
+  </footer>
+
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const toggleBtn = document.getElementById('themeToggle');
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+      // Текущая тема: ручной выбор или тема браузера
+      function effectiveTheme() {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') {
+          return saved;
+        }
+        return media.matches ? 'dark' : 'light';
+      }
+
+      function applyTheme() {
+        root.setAttribute('data-theme', effectiveTheme());
+      }
+
+      // Ручное переключение с запоминанием
+      toggleBtn.addEventListener('click', () => {
+        localStorage.setItem('theme', effectiveTheme() === 'dark' ? 'light' : 'dark');
+        applyTheme();
+      });
+
+      // Следим за сменой темы браузера, пока нет ручного выбора
+      media.addEventListener('change', () => {
+        if (!localStorage.getItem('theme')) {
+          applyTheme();
+        }
+      });
+
+      applyTheme();
+    })();
+  </script>
+</body>
+</html>
